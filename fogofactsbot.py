@@ -2,7 +2,7 @@ from time import sleep
 from slackclient import SlackClient
 import os
 from datetime import datetime
-from fogofacts import *
+from fogofacts import FogoFacts
 from random import choice
 from pytz import timezone
 import atexit
@@ -41,6 +41,9 @@ If you have any facts you want to add, comments, complaints, or bug reports, mes
 """
 
 
+cf = FogoFacts()
+
+
 @atexit.register
 def save_subs():
     print('Writing subscribers.')
@@ -51,18 +54,16 @@ def save_subs():
 # signal.signal(signal.SIGTERM, sigterm_handler)
 
 TOKEN = os.environ.get('FOGOFACTSECRET', None)  # found at https://api.slack.com/web#authentifogoion
-S3_ACCESS_KEY = os.environ.get('S3_ACCESS_KEY', None)
-S3_SECRET_KEY = os.environ.get('S3_SECRET_KEY', None)
+# S3_ACCESS_KEY = os.environ.get('S3_ACCESS_KEY', None)
+# S3_SECRET_KEY = os.environ.get('S3_SECRET_KEY', None)
 
-conn = Connection(S3_ACCESS_KEY, S3_SECRET_KEY, endpoint='s3-ap-southeast-2.amazonaws.com')
+# conn = Connection(S3_ACCESS_KEY, S3_SECRET_KEY, endpoint='s3-ap-southeast-2.amazonaws.com')
 
-saved_subs = conn.get('subscribers.txt', 'better-fogo-facts')
+# saved_subs = conn.get('subscribers.txt', 'better-fogo-facts')
 
-f = open('subscribers.txt', 'wb')
-f.write(saved_subs.content)
-f.close()
-
-cf = CatFacts()
+# f = open('subscribers.txt', 'wb')
+# f.write(saved_subs.content)
+# f.close()
 
 sc = SlackClient(TOKEN)
 if sc.rtm_connect() is True:
@@ -70,6 +71,7 @@ if sc.rtm_connect() is True:
 
     sc.api_call("im.list")
 
+    sc.api_call('chat.postMessage', channel=u'C02T882JP', text="It's time for Fogo Facts!")
     while True:
         response = sc.rtm_read()
         for part in response:
@@ -106,5 +108,5 @@ if sc.rtm_connect() is True:
             save_subs()
 
         sleep(1)
-  else:
+else:
     print('Connection Failed, invalid token?')
