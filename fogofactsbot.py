@@ -69,9 +69,11 @@ sc = SlackClient(TOKEN)
 if sc.rtm_connect() is True:
     print('Connected.')
 
-    sc.api_call("im.list")
-
-    sc.api_call('chat.postMessage', channel=u'C02T882JP', text="It's time for Fogo Facts!")
+    # sc.api_call("im.list")
+    # sc.api_call('chat.postMessage', channel=u'C02T882JP', text="It's time for Fogo Facts!")
+    # sc.api_call("chat.postMessage", channel=u'C02T882JP', text=cf.get_fact(u'C02T882JP'), username=NAME, icon_emoji=':fogo:')
+    import pdb
+    pdb.set_trace()
     while True:
         response = sc.rtm_read()
         for part in response:
